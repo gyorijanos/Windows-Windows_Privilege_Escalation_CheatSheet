@@ -111,6 +111,18 @@ Remove-Service -Name "Vulnerable Service 1"
 wmic service get name,pathname,displayname,startmode | findstr /i auto | findstr /i /v "C:\Windows\\" | findstr /i /v """
 ```
 
+or 
+
+```
+Get-CimInstance Win32_Service |
+Where-Object {
+    $_.StartMode -eq "Auto" -and
+    $_.PathName -notmatch "^C:\\Windows\\" -and
+    $_.PathName -notmatch "'"
+} |
+Select-Object Name, DisplayName, StartMode, PathName
+```
+
 2) Use the following command to find the `START_TYPE`, `SERVICE_START_NAME` and `BINARY_PATH_NAME`:
 
 ```
